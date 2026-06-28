@@ -31,6 +31,83 @@ Enabled = false
 })
 
 
+local playerGui = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+
+
+local ConfirmGui = Instance.new("ScreenGui")
+
+ConfirmGui.Name = "AutoSkillConfirm"
+
+ConfirmGui.ResetOnSpawn = false
+
+ConfirmGui.Enabled = false
+
+ConfirmGui.Parent = playerGui
+
+
+local Frame = Instance.new("Frame")
+
+Frame.Size = UDim2.new(0,300,0,160)
+
+Frame.Position = UDim2.new(0.5,-150,0.5,-80)
+
+Frame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+
+Frame.Parent = ConfirmGui
+
+
+Instance.new("UICorner", Frame).CornerRadius = UDim.new(0,10)
+
+
+local Text = Instance.new("TextLabel")
+
+Text.Size = UDim2.new(1,-20,0,80)
+
+Text.Position = UDim2.new(0,10,0,10)
+
+Text.BackgroundTransparency = 1
+
+Text.TextScaled = true
+
+Text.TextWrapped = true
+
+Text.TextColor3 = Color3.new(1,1,1)
+
+Text.Text = "⚠️ Auto Skill อาจทำให้มือถือบัค\nแน่ใจหรือไม่?"
+
+Text.Parent = Frame
+
+
+local Yes = Instance.new("TextButton")
+
+Yes.Size = UDim2.new(0.4,0,0,35)
+
+Yes.Position = UDim2.new(0.08,0,0.72,0)
+
+Yes.Text = "ยืนยัน"
+
+Yes.BackgroundColor3 = Color3.fromRGB(0,170,0)
+
+Yes.TextColor3 = Color3.new(1,1,1)
+
+Yes.Parent = Frame
+
+
+local No = Instance.new("TextButton")
+
+No.Size = UDim2.new(0.4,0,0,35)
+
+No.Position = UDim2.new(0.52,0,0.72,0)
+
+No.Text = "ยกเลิก"
+
+No.BackgroundColor3 = Color3.fromRGB(170,0,0)
+
+No.TextColor3 = Color3.new(1,1,1)
+
+No.Parent = Frame
+
+
 local Tab = Window:CreateTab("Main",4483362458)
 
 
@@ -194,24 +271,27 @@ end
 
 Tab:CreateToggle({
 
-
 Name = "สกิว",
 
-
 CurrentValue = false,
-
 
 Callback = function(Value)
 
 
-AutoSkill = Value
+if Value then
 
+ConfirmGui.Enabled = true
+
+else
+
+AutoSkill = false
 
 end
 
 
-})
+end
 
+})
 
 
 --
@@ -372,29 +452,24 @@ end)
 
 task.spawn(function()
 
-
 while task.wait(0.5) do
 
 
-if AutoSkill then
+local char = player.Character
+
+local hum = char and char:FindFirstChild("Humanoid")
 
 
-for _,key in ipairs({
+if AutoSkill
+
+and char
+
+and hum
+
+and hum.Health > 0 then
 
 
-"One",
-
-
-"Two",
-
-
-"Three",
-
-
-"Four"
-
-
-}) do
+for _,key in ipairs({"One","Two","Three","Four"}) do
 
 
 if not AutoSkill then
@@ -404,20 +479,22 @@ break
 end
 
 
-Vim:SendKeyEvent(
+if hum.Health <= 0 then
 
+break
+
+end
+
+
+Vim:SendKeyEvent(
 
 true,
 
-
 Enum.KeyCode[key],
-
 
 false,
 
-
 game
-
 
 )
 
@@ -427,18 +504,13 @@ task.wait(0.05)
 
 Vim:SendKeyEvent(
 
-
 false,
-
 
 Enum.KeyCode[key],
 
-
 false,
 
-
 game
-
 
 )
 
@@ -448,12 +520,9 @@ task.wait(0.3)
 
 end
 
-
 end
 
-
 end
-
 
 end)
 
@@ -597,3 +666,80 @@ PlayerDropdown:Refresh(GetPlayers())
 
 end)
 
+
+player.CharacterAdded:Connect(function()
+
+
+task.wait(1)
+
+
+Vim:SendKeyEvent(
+
+false,
+
+Enum.KeyCode.One,
+
+false,
+
+game
+
+)
+
+
+Vim:SendKeyEvent(
+
+false,
+
+Enum.KeyCode.Two,
+
+false,
+
+game
+
+)
+
+
+Vim:SendKeyEvent(
+
+false,
+
+Enum.KeyCode.Three,
+
+false,
+
+game
+
+)
+
+
+Vim:SendKeyEvent(
+
+false,
+
+Enum.KeyCode.Four,
+
+false,
+
+game
+
+)
+
+
+end)
+
+Yes.MouseButton1Click:Connect(function()
+
+AutoSkill = true
+
+ConfirmGui.Enabled = false
+
+end)
+
+
+No.MouseButton1Click:Connect(function()
+
+AutoSkill = false
+
+ConfirmGui.Enabled = false
+
+end)
