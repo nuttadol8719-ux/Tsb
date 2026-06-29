@@ -32,7 +32,7 @@ local distance = 5
 local mode = "เข้าหลัง💦"
 
 local orbitAngle = 0
-local orbitSpeed = 2
+local orbitSpeed = 0.5
 
 --
 
@@ -121,7 +121,7 @@ end
 })
 
 Tab:CreateToggle({
-Name = "สกิล(หัวไข่เท่านั้น)",
+Name = "สกิว(หัวไข่เท่านั้น)",
 CurrentValue = false,
 Callback = function(Value)
 AutoSkill = Value
@@ -190,11 +190,11 @@ Tab:CreateSlider({
 
 Name = "ความเร็วหมุนตริ้ว",
 
-Range = {1,20},
+Range = {0.1,5},
 
-Increment = 1,
+Increment = 0.1,
 
-CurrentValue = 2,
+CurrentValue = 0.5,
 
 Callback = function(Value)
 
