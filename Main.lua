@@ -26,6 +26,7 @@ local remoteEnabled = false
 local AutoSkill = false
 
 local selectedPlayer = nil
+local selectedPlayerName = nil
 
 local distance = 5
 
@@ -68,7 +69,8 @@ MultipleOptions = false,
 
 Callback = function(Value)
 
-selectedPlayer = Players:FindFirstChild(Value[1])
+selectedPlayerName = Value[1]
+selectedPlayer = Players:FindFirstChild(selectedPlayerName)
 
 end
 
@@ -310,6 +312,20 @@ end
 end
 end)
 
+-- Target Lock System (Auto-enabled)
+task.spawn(function()
+while task.wait(0.5) do
+if selectedPlayerName then
+local targetPlayer = Players:FindFirstChild(selectedPlayerName)
+if targetPlayer then
+selectedPlayer = targetPlayer
+else
+selectedPlayer = nil
+end
+end
+end
+end)
+
 --
 
 RunService.RenderStepped:Connect(function()
@@ -388,9 +404,15 @@ end)
 
 --
 
-Players.PlayerAdded:Connect(function()
+Players.PlayerAdded:Connect(function(newPlayer)
 
 PlayerDropdown:Refresh(GetPlayers())
+
+-- Auto re-lock target when they rejoin
+if newPlayer.Name == selectedPlayerName then
+task.wait(0.5)
+selectedPlayer = newPlayer
+end
 
 end)
 
