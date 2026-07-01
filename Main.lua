@@ -1,5 +1,6 @@
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
 
@@ -24,16 +25,22 @@ local Tab = Window:CreateTab("Main",4483362458)
 local enabled = false
 local remoteEnabled = false
 local AutoSkill = false
+local flyEnabled = false
 
 local selectedPlayer = nil
 local selectedPlayerName = nil
 
 local distance = 5
+local flySpeed = 50
 
 local mode = "เข้าหลัง💦"
 
 local orbitAngle = 0
 local orbitSpeed = 0.5
+
+-- Fly Objects
+local BV = nil
+local BG = nil
 
 --
 
@@ -130,6 +137,25 @@ AutoSkill = Value
 end
 })
 
+Tab:CreateToggle({
+Name = "เทพเจ้าลอยฟ้า (คีย์ลัด: C)",
+CurrentValue = false,
+Callback = function(Value)
+flyEnabled = Value
+if not Value then
+-- Clean up fly objects
+if BV then
+BV:Destroy()
+BV = nil
+end
+if BG then
+BG:Destroy()
+BG = nil
+end
+end
+end
+})
+
 --
 
 Tab:CreateSlider({
@@ -145,6 +171,24 @@ CurrentValue = 5,
 Callback = function(Value)
 
 distance = Value
+
+end
+
+})
+
+Tab:CreateSlider({
+
+Name = "ความเร็วบิน",
+
+Range = {10,200},
+
+Increment = 10,
+
+CurrentValue = 50,
+
+Callback = function(Value)
+
+flySpeed = Value
 
 end
 
@@ -205,6 +249,38 @@ orbitSpeed = Value
 end
 
 })
+
+--
+
+Tab:CreateLabel("💡 คีย์ลัดเทพเจ้าลอยฟ้า: กด C")
+Tab:CreateLabel("✈️ W/S = บินไปข้างหน้า/หลัง (ตามกล้อง)")
+Tab:CreateLabel("✈️ A/D = บินไปซ้าย/ขวา")
+
+-- Keybind Handler (Fixed to C key)
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+if gameProcessed then return end
+
+if input.KeyCode == Enum.KeyCode.C then
+flyEnabled = not flyEnabled
+if not flyEnabled then
+-- Clean up fly objects
+if BV then
+BV:Destroy()
+BV = nil
+end
+if BG then
+BG:Destroy()
+BG = nil
+end
+end
+Rayfield:Notify({
+Title = "เทพเจ้าลอยฟ้า",
+Content = flyEnabled and "เปิด ✨" or "ปิด",
+Duration = 2,
+Image = 4483362458
+})
+end
+end)
 
 --
 
@@ -321,6 +397,74 @@ if targetPlayer then
 selectedPlayer = targetPlayer
 else
 selectedPlayer = nil
+end
+end
+end
+end)
+
+-- Fly System (Full 3D Freedom with WASD only)
+RunService.Heartbeat:Connect(function()
+local char = player.Character
+if char then
+local hrp = char:FindFirstChild("HumanoidRootPart")
+if hrp then
+if flyEnabled then
+-- Create fly objects if they don't exist
+if not BV then
+BV = Instance.new("BodyVelocity")
+BV.Parent = hrp
+BV.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+end
+if not BG then
+BG = Instance.new("BodyGyro")
+BG.Parent = hrp
+BG.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
+BG.P = 10000
+BG.D = 500
+end
+
+local cam = workspace.CurrentCamera
+local moveDirection = Vector3.new(0, 0, 0)
+
+-- Get movement input (WASD follows camera direction in 3D)
+if UserInputService:IsKeyDown(Enum.KeyCode.W) then
+-- Move in the direction camera is looking (includes up/down)
+moveDirection = moveDirection + cam.CFrame.LookVector
+end
+if UserInputService:IsKeyDown(Enum.KeyCode.S) then
+-- Move opposite to camera direction
+moveDirection = moveDirection - cam.CFrame.LookVector
+end
+if UserInputService:IsKeyDown(Enum.KeyCode.A) then
+-- Move left relative to camera
+moveDirection = moveDirection - cam.CFrame.RightVector
+end
+if UserInputService:IsKeyDown(Enum.KeyCode.D) then
+-- Move right relative to camera
+moveDirection = moveDirection + cam.CFrame.RightVector
+end
+
+-- Normalize direction
+if moveDirection.Magnitude > 0 then
+moveDirection = moveDirection.Unit
+end
+
+-- Apply velocity (full 3D movement)
+BV.Velocity = moveDirection * flySpeed
+
+-- Keep camera orientation
+BG.CFrame = cam.CFrame
+
+else
+-- Clean up when fly is disabled
+if BV then
+BV:Destroy()
+BV = nil
+end
+if BG then
+BG:Destroy()
+BG = nil
+end
 end
 end
 end
