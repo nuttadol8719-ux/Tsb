@@ -838,6 +838,55 @@ OtherTab:Button({
     end
 })
 
+-- ==========================================
+-- 🧩 สคริปด๋มดุย
+-- ==========================================
+
+local ScriptTab = Window:Tab({
+    Title = "สคริปด๋มดุย",
+    Icon = "code-2"
+})
+
+ScriptTab:Paragraph({
+    Title = "📜 สคริปต์เพิ่มเติม",
+    Description = "กดปุ่มเพื่อโหลดและรันสคริปต์"
+})
+
+ScriptTab:Button({
+    Title = "Supa V2",
+    Desc = "แตะเพื่อรัน Supa V2",
+    Callback = function()
+        WindUI:Notify({
+            Title = "Supa V2",
+            Content = "กำลังโหลดสคริปต์...",
+            Duration = 2
+        })
+
+        task.spawn(function()
+            local success, err = pcall(function()
+                loadstring(game:HttpGet(
+                    "https://api.getpolsec.com/scripts/hosted/2753546c83053761e44664d36ffe5035d6e20fc8aee1d19f0eb7b933974ae537.lua"
+                ))()
+            end)
+
+            if success then
+                WindUI:Notify({
+                    Title = "Supa V2",
+                    Content = "รันสคริปต์สำเร็จแล้ว ✅",
+                    Duration = 3
+                })
+            else
+                WindUI:Notify({
+                    Title = "Supa V2",
+                    Content = "รันไม่สำเร็จ ❌",
+                    Duration = 4
+                })
+                warn("[Supa V2 Error]:", err)
+            end
+        end)
+    end
+})
+
 -- =========================================================
 -- KEYBIND C
 -- =========================================================
