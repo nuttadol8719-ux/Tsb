@@ -43,6 +43,7 @@ local Window = WindUI:CreateWindow({
 -- =========================================================
 -- TABS
 -- =========================================================
+
 local MainTab = Window:Tab({
     Title = "Main",
     Icon = "house",
@@ -53,6 +54,77 @@ local BlockTab = Window:Tab({
     Icon = "shield",
 })
 
+-- =========================================================
+-- 🧩 สคริปด๋มดุย
+-- =========================================================
+
+local ScriptTab = Window:Tab({
+    Title = "สคริปด๋มดุย",
+    Icon = "code-2",
+})
+
+ScriptTab:Paragraph({
+    Title = "📜 สคริปต์เพิ่มเติม",
+    Description = "แตะปุ่มด้านล่างเพื่อโหลดและรันสคริปต์",
+})
+
+ScriptTab:Button({
+    Title = "Supa V2",
+    Desc = "แตะเพื่อรัน Supa V2",
+    Icon = "play",
+
+    Callback = function()
+
+        WindUI:Notify({
+            Title = "Supa V2",
+            Content = "กำลังโหลดสคริปต์...",
+            Duration = 2,
+        })
+
+        task.spawn(function()
+
+            local success, err = pcall(function()
+
+                local source = game:HttpGet(
+                    "https://api.getpolsec.com/scripts/hosted/2753546c83053761e44664d36ffe5035d6e20fc8aee1d19f0eb7b933974ae537.lua"
+                )
+
+                local func = loadstring(source)
+
+                if not func then
+                    error("ไม่สามารถโหลดสคริปต์ได้")
+                end
+
+                func()
+            end)
+
+            if success then
+
+                WindUI:Notify({
+                    Title = "Supa V2",
+                    Content = "รัน Supa V2 สำเร็จแล้ว ✅",
+                    Duration = 3,
+                })
+
+            else
+
+                warn("[Supa V2 Error]:", err)
+
+                WindUI:Notify({
+                    Title = "Supa V2",
+                    Content = "รันไม่สำเร็จ ❌",
+                    Duration = 4,
+                })
+
+            end
+        end)
+    end,
+})
+
+-- =========================================================
+-- ⚙️ อื่นๆ
+-- =========================================================
+
 local OtherTab = Window:Tab({
     Title = "อื่นๆ",
     Icon = "settings-2",
@@ -61,6 +133,7 @@ local OtherTab = Window:Tab({
 -- =========================================================
 -- VARIABLES
 -- =========================================================
+
 local enabled = false
 local remoteEnabled = false
 local AutoSkill = false
@@ -94,6 +167,7 @@ local animationConnection = nil
 -- =========================================================
 -- AUTO BLOCK + COUNTER
 -- =========================================================
+
 local autoBlockEnabled = false
 local blockDistance = 10
 local blockDuration = 0.35
@@ -107,11 +181,11 @@ local isCountering = false
 -- =========================================================
 -- TARGET ANIMATION IDS
 -- =========================================================
+
 local targetAnimationIds = {
     ["10469493270"] = true,
     ["10469630950"] = true,
     ["10469639222"] = true,
-    ["10469643643"] = true,
     ["10503381238"] = true,
     ["10479335397"] = true,
     ["10466974800"] = true,
@@ -170,6 +244,7 @@ local targetAnimationIds = {
 -- =========================================================
 -- PLAYER LIST
 -- =========================================================
+
 local function GetPlayers()
     local t = {}
 
@@ -187,8 +262,11 @@ end
 -- =========================================================
 -- PUNCH
 -- =========================================================
+
 local function PerformSinglePunchRemote()
+
     local char = player.Character
+
     if not char then
         return
     end
@@ -197,8 +275,11 @@ local function PerformSinglePunchRemote()
     local hrp = char:FindFirstChild("HumanoidRootPart")
 
     if communicate then
+
         pcall(function()
-            local currentCF = hrp and hrp.CFrame or CFrame.new()
+
+            local currentCF =
+                hrp and hrp.CFrame or CFrame.new()
 
             communicate:FireServer({
                 Mobile = true,
@@ -211,6 +292,7 @@ local function PerformSinglePunchRemote()
             communicate:FireServer({
                 Goal = "LeftClickRelease"
             })
+
         end)
     end
 end
@@ -218,12 +300,15 @@ end
 -- =========================================================
 -- BLOCK
 -- =========================================================
+
 local function TriggerBlockRemote()
+
     if isBlocking then
         return
     end
 
     local char = player.Character
+
     if not char then
         return
     end
@@ -238,30 +323,37 @@ local function TriggerBlockRemote()
     isBlocking = true
 
     pcall(function()
-        local currentCF = hrp and hrp.CFrame or CFrame.new()
+
+        local currentCF =
+            hrp and hrp.CFrame or CFrame.new()
 
         communicate:FireServer({
             Goal = "KeyPress",
             Key = Enum.KeyCode.F,
             MousePos = currentCF
         })
+
     end)
 
     task.delay(blockDuration, function()
+
         if isBlocking and autoUnblock then
 
             pcall(function()
+
                 communicate:FireServer({
                     Goal = "KeyRelease",
                     Key = Enum.KeyCode.F
                 })
+
             end)
 
             isBlocking = false
 
             -- =================================================
-            -- COUNTER PUNCH
+            -- COUNTER
             -- =================================================
+
             if counterEnabled and not isCountering then
 
                 isCountering = true
@@ -273,6 +365,7 @@ local function TriggerBlockRemote()
                 task.wait(0.1)
 
                 isCountering = false
+
             end
         end
     end)
@@ -281,9 +374,11 @@ end
 -- =========================================================
 -- FLOATING FLY BUTTON
 -- =========================================================
+
 local PlayerGui = player:WaitForChild("PlayerGui")
 
 local FlyButtonGui = Instance.new("ScreenGui")
+
 FlyButtonGui.Name = "FlyButtonGui"
 FlyButtonGui.ResetOnSpawn = false
 FlyButtonGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -291,30 +386,45 @@ FlyButtonGui.Parent = PlayerGui
 FlyButtonGui.Enabled = true
 
 local FlyButton = Instance.new("TextButton")
+
 FlyButton.Name = "FlyButton"
 FlyButton.Size = UDim2.new(0, 80, 0, 80)
 FlyButton.Position = UDim2.new(1, -100, 0.5, -40)
-FlyButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+FlyButton.BackgroundColor3 =
+    Color3.fromRGB(40, 40, 40)
+
 FlyButton.BorderSizePixel = 0
 FlyButton.Text = "✈️"
-FlyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+FlyButton.TextColor3 =
+    Color3.fromRGB(255, 255, 255)
+
 FlyButton.TextSize = 40
 FlyButton.Font = Enum.Font.GothamBold
 FlyButton.Parent = FlyButtonGui
 
 local Corner = Instance.new("UICorner")
+
 Corner.CornerRadius = UDim.new(0, 15)
 Corner.Parent = FlyButton
 
 local function UpdateButtonColor()
+
     if flyEnabled then
-        FlyButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+
+        FlyButton.BackgroundColor3 =
+            Color3.fromRGB(0, 170, 255)
+
         FlyButton.Text = "✈️ ON"
         FlyButton.TextSize = 24
+
     else
-        FlyButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+
+        FlyButton.BackgroundColor3 =
+            Color3.fromRGB(40, 40, 40)
+
         FlyButton.Text = "✈️"
         FlyButton.TextSize = 40
+
     end
 end
 
@@ -338,15 +448,18 @@ FlyButton.MouseButton1Click:Connect(function()
     end
 
     if FlyToggle then
+
         pcall(function()
             FlyToggle:Set(flyEnabled)
         end)
+
     end
 end)
 
 -- =========================================================
 -- DRAG FLY BUTTON
 -- =========================================================
+
 local dragging = false
 local dragInput
 local mousePos
@@ -354,8 +467,10 @@ local framePos
 
 FlyButton.InputBegan:Connect(function(input)
 
-    if input.UserInputType == Enum.UserInputType.MouseButton1
-        or input.UserInputType == Enum.UserInputType.Touch then
+    if input.UserInputType ==
+        Enum.UserInputType.MouseButton1
+        or input.UserInputType ==
+        Enum.UserInputType.Touch then
 
         dragging = true
         mousePos = input.Position
@@ -363,20 +478,25 @@ FlyButton.InputBegan:Connect(function(input)
 
         input.Changed:Connect(function()
 
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
+            if input.UserInputState ==
+                Enum.UserInputState.End then
 
+                dragging = false
+
+            end
         end)
     end
 end)
 
 FlyButton.InputChanged:Connect(function(input)
 
-    if input.UserInputType == Enum.UserInputType.MouseMovement
-        or input.UserInputType == Enum.UserInputType.Touch then
+    if input.UserInputType ==
+        Enum.UserInputType.MouseMovement
+        or input.UserInputType ==
+        Enum.UserInputType.Touch then
 
         dragInput = input
+
     end
 end)
 
@@ -384,7 +504,8 @@ UserInputService.InputChanged:Connect(function(input)
 
     if input == dragInput and dragging then
 
-        local delta = input.Position - mousePos
+        local delta =
+            input.Position - mousePos
 
         FlyButton.Position = UDim2.new(
             framePos.X.Scale,
@@ -392,15 +513,19 @@ UserInputService.InputChanged:Connect(function(input)
             framePos.Y.Scale,
             framePos.Y.Offset + delta.Y
         )
+
     end
 end)
 
 -- =========================================================
 -- MAIN TAB
 -- =========================================================
+
 local PlayerDropdown = MainTab:Dropdown({
+
     Title = "เลือกผู้เล่น",
     Desc = "เลือกผู้เล่นที่ต้องการติดตาม",
+
     Values = GetPlayers(),
     Value = nil,
     AllowNone = true,
@@ -408,42 +533,54 @@ local PlayerDropdown = MainTab:Dropdown({
     Callback = function(option)
 
         selectedPlayerName = option
-        selectedPlayer = Players:FindFirstChild(option)
+        selectedPlayer =
+            Players:FindFirstChild(option)
 
     end
 })
 
 MainTab:Button({
+
     Title = "รีเซ็ตผู้เล่น",
     Desc = "อัปเดตรายชื่อผู้เล่น",
     Icon = "refresh-cw",
 
     Callback = function()
 
-        PlayerDropdown:Refresh(GetPlayers())
+        PlayerDropdown:Refresh(
+            GetPlayers()
+        )
 
         WindUI:Notify({
+
             Title = "รีเซ็ตสำเร็จ",
             Content = "รายชื่อผู้เล่นถูกอัปเดตแล้ว",
             Duration = 3,
+
         })
 
     end
 })
 
 MainTab:Toggle({
+
     Title = "เข้าหลัง💦",
     Desc = "ติดตามตำแหน่งด้านหลังของผู้เล่น",
+
     Default = false,
 
     Callback = function(Value)
+
         enabled = Value
+
     end
 })
 
 MainTab:Slider({
+
     Title = "ติดหนึบ",
     Desc = "Prediction",
+
     Step = 0.01,
 
     Value = {
@@ -453,33 +590,45 @@ MainTab:Slider({
     },
 
     Callback = function(Value)
+
         predictionTime = Value
+
     end
 })
 
 MainTab:Toggle({
+
     Title = "ต่อย",
     Desc = "ต่อยอัตโนมัติ",
+
     Default = false,
 
     Callback = function(Value)
+
         remoteEnabled = Value
+
     end
 })
 
 MainTab:Toggle({
+
     Title = "สกิว (หัวไข่เท่านั้น)",
     Desc = "ใช้สกิลอัตโนมัติ",
+
     Default = false,
 
     Callback = function(Value)
+
         AutoSkill = Value
+
     end
 })
 
 FlyToggle = MainTab:Toggle({
+
     Title = "เทพเจ้าลอยฟ้า",
     Desc = "กด C เพื่อเปิด/ปิด",
+
     Default = false,
 
     Callback = function(Value)
@@ -499,13 +648,16 @@ FlyToggle = MainTab:Toggle({
                 BG:Destroy()
                 BG = nil
             end
+
         end
     end
 })
 
 MainTab:Toggle({
+
     Title = "แสดงปุ่มลอย ✈️",
     Desc = "แสดงหรือซ่อนปุ่มบิน",
+
     Default = true,
 
     Callback = function(Value)
@@ -517,8 +669,10 @@ MainTab:Toggle({
 })
 
 MainTab:Toggle({
+
     Title = "อนิเมชั่นเพิ่มดาเมจ",
     Desc = "หยุดอนิเมชั่น",
+
     Default = false,
 
     Callback = function(Value)
@@ -541,40 +695,54 @@ MainTab:Toggle({
         if Value then
 
             if animationConnection then
+
                 animationConnection:Disconnect()
                 animationConnection = nil
+
             end
 
             animationConnection =
-                humanoid.AnimationPlayed:Connect(function(track)
+                humanoid.AnimationPlayed:Connect(
+                    function(track)
 
-                    pcall(function()
-                        track:AdjustSpeed(0)
-                        track.TimePosition = 0
-                    end)
+                        pcall(function()
 
-                end)
+                            track:AdjustSpeed(0)
+                            track.TimePosition = 0
+
+                        end)
+
+                    end
+                )
 
             WindUI:Notify({
+
                 Title = "อนิเมชั่นเพิ่มดาเมจ เปิด",
-                Content = "หยุดอนิเมชั่นทั้งหมดเพื่อเพิ่มดาเมจ",
+                Content =
+                    "หยุดอนิเมชั่นทั้งหมดเพื่อเพิ่มดาเมจ",
                 Duration = 3,
+
             })
 
         else
 
             if animationConnection then
+
                 animationConnection:Disconnect()
                 animationConnection = nil
+
             end
 
             local animator =
-                humanoid:FindFirstChildOfClass("Animator")
+                humanoid:FindFirstChildOfClass(
+                    "Animator"
+                )
 
             if animator then
 
-                for _, track in
-                    ipairs(animator:GetPlayingAnimationTracks()) do
+                for _, track in ipairs(
+                    animator:GetPlayingAnimationTracks()
+                ) do
 
                     pcall(function()
                         track:AdjustSpeed(1)
@@ -584,17 +752,22 @@ MainTab:Toggle({
             end
 
             WindUI:Notify({
+
                 Title = "อนิเมชั่นเพิ่มดาเมจ ปิด",
-                Content = "อนิเมชั่นกลับมาปกติแล้ว",
+                Content =
+                    "อนิเมชั่นกลับมาปกติแล้ว",
                 Duration = 3,
+
             })
         end
     end
 })
 
 MainTab:Toggle({
+
     Title = "🌀 บัคปลอม",
     Desc = "แหงนขึ้น 35° เมื่อเคลื่อนไหว",
+
     Default = false,
 
     Callback = function(Value)
@@ -604,8 +777,10 @@ MainTab:Toggle({
         if not Value then
 
             if FakeBugGyro then
+
                 FakeBugGyro:Destroy()
                 FakeBugGyro = nil
+
             end
 
             previousPosition = nil
@@ -613,17 +788,22 @@ MainTab:Toggle({
             tiltTimer = 0
 
             WindUI:Notify({
+
                 Title = "บัคปลอม ปิด",
                 Content = "กลับสู่ปกติแล้ว",
                 Duration = 3,
+
             })
 
         else
 
             WindUI:Notify({
+
                 Title = "บัคปลอม เปิด",
-                Content = "ตัวจะแหงนขึ้น 35° เมื่อเคลื่อนไหว",
+                Content =
+                    "ตัวจะแหงนขึ้น 35° เมื่อเคลื่อนไหว",
                 Duration = 3,
+
             })
 
         end
@@ -631,6 +811,7 @@ MainTab:Toggle({
 })
 
 MainTab:Slider({
+
     Title = "ระยะ",
     Desc = "ระยะห่างจากเป้าหมาย",
 
@@ -643,11 +824,14 @@ MainTab:Slider({
     },
 
     Callback = function(Value)
+
         distance = Value
+
     end
 })
 
 MainTab:Slider({
+
     Title = "ความเร็วบิน",
     Desc = "ความเร็วของระบบบิน",
 
@@ -660,11 +844,14 @@ MainTab:Slider({
     },
 
     Callback = function(Value)
+
         flySpeed = Value
+
     end
 })
 
 MainTab:Dropdown({
+
     Title = "โหมด",
     Desc = "ตำแหน่งรอบเป้าหมาย",
 
@@ -679,11 +866,14 @@ MainTab:Dropdown({
     Value = "เข้าหลัง💦",
 
     Callback = function(option)
+
         mode = option
+
     end
 })
 
 MainTab:Slider({
+
     Title = "ความเร็วหมุนตริ้ว",
     Desc = "ความเร็วในการ Orbit",
 
@@ -696,7 +886,9 @@ MainTab:Slider({
     },
 
     Callback = function(Value)
+
         orbitSpeed = Value
+
     end
 })
 
@@ -705,14 +897,20 @@ MainTab:Slider({
 -- =========================================================
 
 BlockTab:Paragraph({
+
     Title = "🛡️ ระบบ Auto Block",
+
     Description =
         "ตรวจจับ Animation ของคู่ต่อสู้และบล็อกอัตโนมัติ"
+
 })
 
 BlockTab:Toggle({
+
     Title = "🛡️ เปิดใช้งาน Auto Block",
+
     Desc = "ตรวจจับ Animation ของคู่ต่อสู้",
+
     Default = false,
 
     Callback = function(Value)
@@ -721,27 +919,36 @@ BlockTab:Toggle({
 
         if not Value and isBlocking then
 
-            local char = player.Character
+            local char =
+                player.Character
 
-            if char and char:FindFirstChild("Communicate") then
+            if char and
+                char:FindFirstChild(
+                    "Communicate"
+                ) then
 
                 pcall(function()
 
                     char.Communicate:FireServer({
+
                         Goal = "KeyRelease",
                         Key = Enum.KeyCode.F
+
                     })
 
                 end)
             end
 
             isBlocking = false
+
         end
     end
 })
 
 BlockTab:Slider({
+
     Title = "ระยะตรวจจับการโจมตี",
+
     Desc = "ระยะตรวจจับ Animation",
 
     Step = 1,
@@ -753,12 +960,16 @@ BlockTab:Slider({
     },
 
     Callback = function(Value)
+
         blockDistance = Value
+
     end
 })
 
 BlockTab:Slider({
+
     Title = "ระยะเวลาค้างบล็อก",
+
     Desc = "เวลาที่ถือบล็อก",
 
     Step = 0.05,
@@ -770,32 +981,40 @@ BlockTab:Slider({
     },
 
     Callback = function(Value)
+
         blockDuration = Value
+
     end
 })
 
--- =========================================================
--- COUNTER ย้ายมาอยู่ใน AUTO BLOCK
--- =========================================================
-
 BlockTab:Paragraph({
+
     Title = "⚔️ ระบบต่อยสวน",
+
     Description =
         "หลังปล่อยบล็อก จะต่อยสวนกลับ 1 ครั้ง"
+
 })
 
 BlockTab:Toggle({
+
     Title = "⚔️ เปิดใช้งานต่อยสวน",
+
     Desc = "ต่อยสวนอัตโนมัติหลังปล่อยบล็อก",
+
     Default = true,
 
     Callback = function(Value)
+
         counterEnabled = Value
+
     end
 })
 
 BlockTab:Slider({
+
     Title = "ดีเลย์ก่อนต่อยสวน",
+
     Desc = "เวลาหน่วงก่อนปล่อย M1",
 
     Step = 0.01,
@@ -807,7 +1026,9 @@ BlockTab:Slider({
     },
 
     Callback = function(Value)
+
         counterDelay = Value
+
     end
 })
 
@@ -816,23 +1037,32 @@ BlockTab:Slider({
 -- =========================================================
 
 OtherTab:Paragraph({
+
     Title = "ℹ️ ข้อมูล UI",
+
     Description =
         "UI Library: WindUI\n" ..
         "Created by: pond\n" ..
         "WindUI by Footagesus"
+
 })
 
 OtherTab:Button({
+
     Title = "แจ้งเตือนทดสอบ",
     Icon = "bell",
 
     Callback = function()
 
         WindUI:Notify({
+
             Title = "น้องปอนด์ Hub",
-            Content = "WindUI ทำงานปกติแล้ว!",
+
+            Content =
+                "WindUI ทำงานปกติแล้ว!",
+
             Duration = 3,
+
         })
 
     end
@@ -842,43 +1072,51 @@ OtherTab:Button({
 -- KEYBIND C
 -- =========================================================
 
-UserInputService.InputBegan:Connect(function(
-    input,
-    gameProcessed
+UserInputService.InputBegan:Connect(
+    function(input, gameProcessed)
+
+        if gameProcessed then
+            return
+        end
+
+        if input.KeyCode ==
+            Enum.KeyCode.C then
+
+            flyEnabled = not flyEnabled
+
+            UpdateButtonColor()
+
+            if not flyEnabled then
+
+                if BV then
+
+                    BV:Destroy()
+                    BV = nil
+
+                end
+
+                if BG then
+
+                    BG:Destroy()
+                    BG = nil
+
+                end
+            end
+
+            if FlyToggle then
+
+                pcall(function()
+
+                    FlyToggle:Set(
+                        flyEnabled
+                    )
+
+                end)
+
+            end
+        end
+    end
 )
-
-    if gameProcessed then
-        return
-    end
-
-    if input.KeyCode == Enum.KeyCode.C then
-
-        flyEnabled = not flyEnabled
-
-        UpdateButtonColor()
-
-        if not flyEnabled then
-
-            if BV then
-                BV:Destroy()
-                BV = nil
-            end
-
-            if BG then
-                BG:Destroy()
-                BG = nil
-            end
-        end
-
-        if FlyToggle then
-
-            pcall(function()
-                FlyToggle:Set(flyEnabled)
-            end)
-
-        end
-    end
-end)
 
 -- =========================================================
 -- SYSTEM ENGINE
@@ -893,10 +1131,14 @@ RunService.Heartbeat:Connect(function(dt)
     end
 
     local hrp =
-        char:FindFirstChild("HumanoidRootPart")
+        char:FindFirstChild(
+            "HumanoidRootPart"
+        )
 
     local hum =
-        char:FindFirstChildOfClass("Humanoid")
+        char:FindFirstChildOfClass(
+            "Humanoid"
+        )
 
     if not hrp or not hum then
         return
@@ -909,16 +1151,21 @@ RunService.Heartbeat:Connect(function(dt)
     if freezeAnimEnabled then
 
         local animator =
-            hum:FindFirstChildOfClass("Animator")
+            hum:FindFirstChildOfClass(
+                "Animator"
+            )
 
         if animator then
 
-            for _, track in
-                ipairs(animator:GetPlayingAnimationTracks()) do
+            for _, track in ipairs(
+                animator:GetPlayingAnimationTracks()
+            ) do
 
                 pcall(function()
+
                     track.TimePosition = 0
                     track:AdjustSpeed(0)
+
                 end)
 
             end
@@ -936,11 +1183,13 @@ RunService.Heartbeat:Connect(function(dt)
             BV = Instance.new("BodyVelocity")
             BV.Parent = hrp
 
-            BV.MaxForce = Vector3.new(
-                9e9,
-                9e9,
-                9e9
-            )
+            BV.MaxForce =
+                Vector3.new(
+                    9e9,
+                    9e9,
+                    9e9
+                )
+
         end
 
         if not BG then
@@ -948,14 +1197,16 @@ RunService.Heartbeat:Connect(function(dt)
             BG = Instance.new("BodyGyro")
             BG.Parent = hrp
 
-            BG.MaxTorque = Vector3.new(
-                9e9,
-                9e9,
-                9e9
-            )
+            BG.MaxTorque =
+                Vector3.new(
+                    9e9,
+                    9e9,
+                    9e9
+                )
 
             BG.P = 10000
             BG.D = 500
+
         end
 
         local cam =
@@ -970,6 +1221,7 @@ RunService.Heartbeat:Connect(function(dt)
 
             moveDirection +=
                 cam.CFrame.LookVector
+
         end
 
         if UserInputService:IsKeyDown(
@@ -978,6 +1230,7 @@ RunService.Heartbeat:Connect(function(dt)
 
             moveDirection -=
                 cam.CFrame.LookVector
+
         end
 
         if UserInputService:IsKeyDown(
@@ -986,6 +1239,7 @@ RunService.Heartbeat:Connect(function(dt)
 
             moveDirection -=
                 cam.CFrame.RightVector
+
         end
 
         if UserInputService:IsKeyDown(
@@ -994,6 +1248,7 @@ RunService.Heartbeat:Connect(function(dt)
 
             moveDirection +=
                 cam.CFrame.RightVector
+
         end
 
         if UserInputService.TouchEnabled then
@@ -1027,30 +1282,48 @@ RunService.Heartbeat:Connect(function(dt)
                     )
 
                 if flatLook.Magnitude > 0 then
+
                     flatLook =
                         flatLook.Unit
+
                 end
 
                 if flatRight.Magnitude > 0 then
+
                     flatRight =
                         flatRight.Unit
+
                 end
 
                 local forwardAmount =
-                    moveDir:Dot(flatLook)
+                    moveDir:Dot(
+                        flatLook
+                    )
 
                 local rightAmount =
-                    moveDir:Dot(flatRight)
+                    moveDir:Dot(
+                        flatRight
+                    )
 
                 moveDirection =
-                    (camLook * forwardAmount)
-                    + (camRight * rightAmount)
+                    (
+                        camLook *
+                        forwardAmount
+                    )
+                    +
+                    (
+                        camRight *
+                        rightAmount
+                    )
+
             end
         end
 
         if moveDirection.Magnitude > 0 then
+
             moveDirection =
                 moveDirection.Unit
+
         end
 
         BV.Velocity =
@@ -1060,19 +1333,23 @@ RunService.Heartbeat:Connect(function(dt)
             CFrame.new(
                 hrp.Position,
                 hrp.Position +
-                cam.CFrame.LookVector
+                    cam.CFrame.LookVector
             )
 
     else
 
         if BV then
+
             BV:Destroy()
             BV = nil
+
         end
 
         if BG then
+
             BG:Destroy()
             BG = nil
+
         end
     end
 
@@ -1101,6 +1378,7 @@ RunService.Heartbeat:Connect(function(dt)
 
             previousPosition =
                 hrp.Position
+
         end
 
         local currentState =
@@ -1119,7 +1397,7 @@ RunService.Heartbeat:Connect(function(dt)
 
         local isGettingUp =
             currentState ==
-            Enum.HumanoidStateType.GettingUp
+                Enum.HumanoidStateType.GettingUp
 
         if isDown then
 
@@ -1139,7 +1417,7 @@ RunService.Heartbeat:Connect(function(dt)
                 CFrame.new(
                     hrp.Position,
                     hrp.Position +
-                    hrp.CFrame.LookVector
+                        hrp.CFrame.LookVector
                 )
 
         else
@@ -1168,9 +1446,13 @@ RunService.Heartbeat:Connect(function(dt)
                 else
 
                     if tiltTimer > 0 then
+
                         tiltTimer -= dt
+
                     else
+
                         tiltActive = false
+
                     end
                 end
 
@@ -1181,6 +1463,7 @@ RunService.Heartbeat:Connect(function(dt)
 
                 previousPosition =
                     hrp.Position
+
             end
 
             if tiltActive then
@@ -1192,9 +1475,10 @@ RunService.Heartbeat:Connect(function(dt)
                     CFrame.new(
                         hrp.Position,
                         hrp.Position +
-                        lookVector
+                            lookVector
                     )
-                    * CFrame.Angles(
+                    *
+                    CFrame.Angles(
                         math.rad(35),
                         0,
                         0
@@ -1209,16 +1493,19 @@ RunService.Heartbeat:Connect(function(dt)
                     CFrame.new(
                         hrp.Position,
                         hrp.Position +
-                        hrp.CFrame.LookVector
+                            hrp.CFrame.LookVector
                     )
+
             end
         end
 
     else
 
         if FakeBugGyro then
+
             FakeBugGyro:Destroy()
             FakeBugGyro = nil
+
         end
     end
 
@@ -1285,6 +1572,7 @@ RunService.Heartbeat:Connect(function(dt)
                                         TriggerBlockRemote()
 
                                         break
+
                                     end
                                 end
                             end
@@ -1304,6 +1592,7 @@ local function UpdatePosition()
 
     if not enabled
         or not selectedPlayer then
+
         return
     end
 
@@ -1339,7 +1628,10 @@ local function UpdatePosition()
         )
 
     local predictedCFrame =
-        CFrame.new(predictedTargetPos) *
+        CFrame.new(
+            predictedTargetPos
+        )
+        *
         (
             tHRP.CFrame -
             tHRP.Position
@@ -1424,6 +1716,7 @@ local function UpdatePosition()
                 finalTargetPos,
                 predictedTargetPos
             )
+
     end
 end
 
@@ -1455,8 +1748,10 @@ task.spawn(function()
                 pcall(function()
 
                     communicate:FireServer({
+
                         Goal = "LeftClick",
                         Mobile = true
+
                     })
 
                 end)
@@ -1502,10 +1797,12 @@ task.spawn(function()
                 if communicate then
 
                     local skills = {
+
                         "Normal Punch",
                         "Consecutive Punches",
                         "Shove",
                         "Uppercut"
+
                     }
 
                     for _, skillName in ipairs(
@@ -1524,10 +1821,12 @@ task.spawn(function()
                         if skill then
 
                             local args = {{
+
                                 IsAutoActivate = true,
                                 Goal = "Console Move",
                                 Tool = skill,
                                 ToolName = skillName
+
                             }}
 
                             pcall(function()
@@ -1539,6 +1838,7 @@ task.spawn(function()
                             end)
 
                             task.wait(0.5)
+
                         end
                     end
                 end
@@ -1564,6 +1864,7 @@ Players.PlayerAdded:Connect(function(newPlayer)
 
         selectedPlayer =
             newPlayer
+
     end
 end)
 
@@ -1580,6 +1881,7 @@ Players.PlayerRemoving:Connect(function(
 
         selectedPlayer = nil
         selectedPlayerName = nil
+
     end
 end)
 
@@ -1588,7 +1890,12 @@ end)
 -- =========================================================
 
 WindUI:Notify({
+
     Title = "น้องปอนด์ Hub",
-    Content = "WindUI โหลดสำเร็จ! ต่อสวนถูกย้ายเข้า Auto Block แล้ว",
+
+    Content =
+        "โหลดสำเร็จ! Main → Auto Block → สคริปด๋มดุย → อื่นๆ",
+
     Duration = 5,
+
 })
