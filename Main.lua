@@ -811,10 +811,51 @@ BlockTab:Slider({
     end
 })
 
+
+
+-- =========================================================
+-- OTHER TAB
+-- =========================================================
+
+OtherTab:Paragraph({
+    Title = "ℹ️ ข้อมูล UI",
+    Description =
+        "UI Library: WindUI\n" ..
+        "Created by: pond\n" ..
+        "WindUI by Footagesus"
+})
+
+OtherTab:Button({
+    Title = "แจ้งเตือนทดสอบ",
+    Icon = "bell",
+
+    Callback = function()
+
+        WindUI:Notify({
+            Title = "น้องปอนด์ Hub",
+            Content = "WindUI ทำงานปกติแล้ว!",
+            Duration = 3,
+        })
+
+    end
+})
 -- ==========================================
--- 🧩 สคริปด๋มดุย
+-- 📑 TABS
 -- ==========================================
 
+-- 🏠 Main
+local MainTab = Window:Tab({
+    Title = "Main",
+    Icon = "house"
+})
+
+-- 🛡️ Auto Block
+local BlockTab = Window:Tab({
+    Title = "Auto Block",
+    Icon = "shield"
+})
+
+-- 🧩 สคริปด๋มดุย
 local ScriptTab = Window:Tab({
     Title = "สคริปด๋มดุย",
     Icon = "code-2"
@@ -822,7 +863,7 @@ local ScriptTab = Window:Tab({
 
 ScriptTab:Paragraph({
     Title = "📜 สคริปต์เพิ่มเติม",
-    Description = "กดปุ่มเพื่อโหลดและรันสคริปต์"
+    Description = "แตะปุ่มเพื่อโหลดและรันสคริปต์"
 })
 
 ScriptTab:Button({
@@ -854,37 +895,17 @@ ScriptTab:Button({
                     Content = "รันไม่สำเร็จ ❌",
                     Duration = 4
                 })
+
                 warn("[Supa V2 Error]:", err)
             end
         end)
     end
 })
 
--- =========================================================
--- OTHER TAB
--- =========================================================
-
-OtherTab:Paragraph({
-    Title = "ℹ️ ข้อมูล UI",
-    Description =
-        "UI Library: WindUI\n" ..
-        "Created by: pond\n" ..
-        "WindUI by Footagesus"
-})
-
-OtherTab:Button({
-    Title = "แจ้งเตือนทดสอบ",
-    Icon = "bell",
-
-    Callback = function()
-
-        WindUI:Notify({
-            Title = "น้องปอนด์ Hub",
-            Content = "WindUI ทำงานปกติแล้ว!",
-            Duration = 3,
-        })
-
-    end
+-- ⚙️ Other
+local OtherTab = Window:Tab({
+    Title = "Other",
+    Icon = "settings-2"
 })
 
 
