@@ -40,23 +40,7 @@ local Window = WindUI:CreateWindow({
     },
 })
 
--- =========================================================
--- TABS
--- =========================================================
-local MainTab = Window:Tab({
-    Title = "Main",
-    Icon = "house",
-})
 
-local BlockTab = Window:Tab({
-    Title = "Auto Block",
-    Icon = "shield",
-})
-
-local OtherTab = Window:Tab({
-    Title = "อื่นๆ",
-    Icon = "settings-2",
-})
 
 -- =========================================================
 -- VARIABLES
