@@ -40,7 +40,23 @@ local Window = WindUI:CreateWindow({
     },
 })
 
+-- =========================================================
+-- TABS
+-- =========================================================
+local MainTab = Window:Tab({
+    Title = "Main",
+    Icon = "house",
+})
 
+local BlockTab = Window:Tab({
+    Title = "Auto Block",
+    Icon = "shield",
+})
+
+local OtherTab = Window:Tab({
+    Title = "อื่นๆ",
+    Icon = "settings-2",
+})
 
 -- =========================================================
 -- VARIABLES
@@ -795,8 +811,6 @@ BlockTab:Slider({
     end
 })
 
-
-
 -- =========================================================
 -- OTHER TAB
 -- =========================================================
@@ -823,76 +837,6 @@ OtherTab:Button({
 
     end
 })
--- ==========================================
--- 📑 TABS
--- ==========================================
-
--- 🏠 Main
-local MainTab = Window:Tab({
-    Title = "Main",
-    Icon = "house"
-})
-
--- 🛡️ Auto Block
-local BlockTab = Window:Tab({
-    Title = "Auto Block",
-    Icon = "shield"
-})
-
--- 🧩 สคริปด๋มดุย
-local ScriptTab = Window:Tab({
-    Title = "สคริปด๋มดุย",
-    Icon = "code-2"
-})
-
-ScriptTab:Paragraph({
-    Title = "📜 สคริปต์เพิ่มเติม",
-    Description = "แตะปุ่มเพื่อโหลดและรันสคริปต์"
-})
-
-ScriptTab:Button({
-    Title = "Supa V2",
-    Desc = "แตะเพื่อรัน Supa V2",
-    Callback = function()
-        WindUI:Notify({
-            Title = "Supa V2",
-            Content = "กำลังโหลดสคริปต์...",
-            Duration = 2
-        })
-
-        task.spawn(function()
-            local success, err = pcall(function()
-                loadstring(game:HttpGet(
-                    "https://api.getpolsec.com/scripts/hosted/2753546c83053761e44664d36ffe5035d6e20fc8aee1d19f0eb7b933974ae537.lua"
-                ))()
-            end)
-
-            if success then
-                WindUI:Notify({
-                    Title = "Supa V2",
-                    Content = "รันสคริปต์สำเร็จแล้ว ✅",
-                    Duration = 3
-                })
-            else
-                WindUI:Notify({
-                    Title = "Supa V2",
-                    Content = "รันไม่สำเร็จ ❌",
-                    Duration = 4
-                })
-
-                warn("[Supa V2 Error]:", err)
-            end
-        end)
-    end
-})
-
--- ⚙️ Other
-local OtherTab = Window:Tab({
-    Title = "Other",
-    Icon = "settings-2"
-})
-
-
 
 -- =========================================================
 -- KEYBIND C
