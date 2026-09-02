@@ -7,6 +7,7 @@ local player = Players.LocalPlayer
 -- =========================================================
 -- WINDUI
 -- =========================================================
+
 local WindUI = loadstring(game:HttpGet(
     "https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"
 ))()
@@ -41,160 +42,23 @@ local Window = WindUI:CreateWindow({
 })
 
 -- =========================================================
--- SCRIPT TAB
+-- TABS
 -- =========================================================
-ScriptTab:Paragraph({
-    Title = "📜 สคริปต์เพิ่มเติม",
-    Description = "แตะปุ่มเพื่อโหลดและรันสคริปต์"
+
+local MainTab = Window:Tab({
+    Title = "Main",
+    Icon = "house",
 })
 
--- Supa V2
-ScriptTab:Button({
-    Title = "Supa V2",
-    Desc = "แตะเพื่อรัน Supa V2",
-    Callback = function()
-        WindUI:Notify({
-            Title = "Supa V2",
-            Content = "กำลังโหลดสคริปต์...",
-            Duration = 2
-        })
-
-        task.spawn(function()
-            local success, err = pcall(function()
-                loadstring(game:HttpGet(
-                    "https://api.getpolsec.com/scripts/hosted/2753546c83053761e44664d36ffe5035d6e20fc8aee1d19f0eb7b933974ae537.lua"
-                ))()
-            end)
-
-            if success then
-                WindUI:Notify({
-                    Title = "Supa V2",
-                    Content = "รันสคริปต์สำเร็จแล้ว ✅",
-                    Duration = 3
-                })
-            else
-                WindUI:Notify({
-                    Title = "Supa V2",
-                    Content = "รันไม่สำเร็จ ❌",
-                    Duration = 4
-                })
-                warn("[Supa V2 Error]:", err)
-            end
-        end)
-    end
+local BlockTab = Window:Tab({
+    Title = "Auto Block",
+    Icon = "shield",
 })
 
--- Hitbox
-ScriptTab:Button({
-    Title = "hitbox",
-    Desc = "แตะเพื่อรัน Hitbox",
-    Callback = function()
-        WindUI:Notify({
-            Title = "hitbox",
-            Content = "กำลังโหลดสคริปต์...",
-            Duration = 2
-        })
-
-        task.spawn(function()
-            local success, err = pcall(function()
-                loadstring(game:HttpGet(
-                    "https://raw.githubusercontent.com/Cyborg883/HitboxExpander/refs/heads/main/Release"
-                ))()
-            end)
-
-            if success then
-                WindUI:Notify({
-                    Title = "hitbox",
-                    Content = "รันสคริปต์สำเร็จแล้ว ✅",
-                    Duration = 3
-                })
-            else
-                WindUI:Notify({
-                    Title = "hitbox",
-                    Content = "รันไม่สำเร็จ ❌",
-                    Duration = 4
-                })
-                warn("[Hitbox Error]:", err)
-            end
-        end)
-    end
+local ScriptTab = Window:Tab({
+    Title = "สคริปด๋มดุย",
+    Icon = "code-2",
 })
-
--- ดีด
-ScriptTab:Button({
-    Title = "ดีด",
-    Desc = "แตะเพื่อรันสคริปต์ดีด",
-    Callback = function()
-        WindUI:Notify({
-            Title = "ดีด",
-            Content = "กำลังโหลดสคริปต์...",
-            Duration = 2
-        })
-
-        task.spawn(function()
-            local success, err = pcall(function()
-                loadstring(game:HttpGet(
-                    "https://raw.githubusercontent.com/RovlixTinProject/NeverX/refs/heads/main/mfr.lua"
-                ))()
-            end)
-
-            if success then
-                WindUI:Notify({
-                    Title = "ดีด",
-                    Content = "รันสคริปต์สำเร็จแล้ว ✅",
-                    Duration = 3
-                })
-            else
-                WindUI:Notify({
-                    Title = "ดีด",
-                    Content = "รันไม่สำเร็จ ❌",
-                    Duration = 4
-                })
-                warn("[ดีด Error]:", err)
-            end
-        end)
-    end
-})
-
--- อีโมต
-ScriptTab:Button({
-    Title = "อีโมต",
-    Desc = "แตะเพื่อรันสคริปต์ Emotes",
-    Callback = function()
-        WindUI:Notify({
-            Title = "อีโมต",
-            Content = "กำลังโหลดสคริปต์...",
-            Duration = 2
-        })
-
-        task.spawn(function()
-            local success, err = pcall(function()
-                loadstring(game:HttpGet(
-                    "https://raw.githubusercontent.com/thefinalstandofizaan-droid/Script-for-me/main/All%20Emotes"
-                ))()
-            end)
-
-            if success then
-                WindUI:Notify({
-                    Title = "อีโมต",
-                    Content = "รันสคริปต์สำเร็จแล้ว ✅",
-                    Duration = 3
-                })
-            else
-                WindUI:Notify({
-                    Title = "อีโมต",
-                    Content = "รันไม่สำเร็จ ❌",
-                    Duration = 4
-                })
-                warn("[Emotes Error]:", err)
-            end
-        end)
-    end
-})
-
--- =========================================================
--- ⚙️ อื่นๆ
--- =========================================================
 
 local OtherTab = Window:Tab({
     Title = "อื่นๆ",
@@ -421,10 +285,6 @@ local function TriggerBlockRemote()
 
             isBlocking = false
 
-            -- =================================================
-            -- COUNTER
-            -- =================================================
-
             if counterEnabled and not isCountering then
 
                 isCountering = true
@@ -441,6 +301,247 @@ local function TriggerBlockRemote()
         end
     end)
 end
+
+-- =========================================================
+-- SCRIPT TAB
+-- =========================================================
+
+ScriptTab:Paragraph({
+    Title = "📜 สคริปต์เพิ่มเติม",
+    Description = "แตะปุ่มด้านล่างเพื่อโหลดและรันสคริปต์",
+})
+
+-- =========================================================
+-- SUPA V2
+-- =========================================================
+
+ScriptTab:Button({
+    Title = "Supa V2",
+    Desc = "แตะเพื่อรัน Supa V2",
+    Icon = "play",
+
+    Callback = function()
+
+        WindUI:Notify({
+            Title = "Supa V2",
+            Content = "กำลังโหลดสคริปต์...",
+            Duration = 2,
+        })
+
+        task.spawn(function()
+
+            local success, err = pcall(function()
+
+                local source = game:HttpGet(
+                    "https://api.getpolsec.com/scripts/hosted/2753546c83053761e44664d36ffe5035d6e20fc8aee1d19f0eb7b933974ae537.lua"
+                )
+
+                local func = loadstring(source)
+
+                if not func then
+                    error("ไม่สามารถโหลดสคริปต์ได้")
+                end
+
+                func()
+
+            end)
+
+            if success then
+
+                WindUI:Notify({
+                    Title = "Supa V2",
+                    Content = "รัน Supa V2 สำเร็จแล้ว ✅",
+                    Duration = 3,
+                })
+
+            else
+
+                warn("[Supa V2 Error]:", err)
+
+                WindUI:Notify({
+                    Title = "Supa V2",
+                    Content = "รันไม่สำเร็จ ❌",
+                    Duration = 4,
+                })
+
+            end
+        end)
+    end,
+})
+
+-- =========================================================
+-- HITBOX
+-- =========================================================
+
+ScriptTab:Button({
+    Title = "hitbox",
+    Desc = "แตะเพื่อรัน Hitbox",
+    Icon = "box",
+
+    Callback = function()
+
+        WindUI:Notify({
+            Title = "hitbox",
+            Content = "กำลังโหลดสคริปต์...",
+            Duration = 2,
+        })
+
+        task.spawn(function()
+
+            local success, err = pcall(function()
+
+                local source = game:HttpGet(
+                    "https://raw.githubusercontent.com/Cyborg883/HitboxExpander/refs/heads/main/Release"
+                )
+
+                local func = loadstring(source)
+
+                if not func then
+                    error("ไม่สามารถโหลดสคริปต์ได้")
+                end
+
+                func()
+
+            end)
+
+            if success then
+
+                WindUI:Notify({
+                    Title = "hitbox",
+                    Content = "รัน hitbox สำเร็จแล้ว ✅",
+                    Duration = 3,
+                })
+
+            else
+
+                warn("[Hitbox Error]:", err)
+
+                WindUI:Notify({
+                    Title = "hitbox",
+                    Content = "รันไม่สำเร็จ ❌",
+                    Duration = 4,
+                })
+
+            end
+        end)
+    end,
+})
+
+-- =========================================================
+-- ดีด
+-- =========================================================
+
+ScriptTab:Button({
+    Title = "ดีด",
+    Desc = "แตะเพื่อรัน NeverX",
+    Icon = "zap",
+
+    Callback = function()
+
+        WindUI:Notify({
+            Title = "ดีด",
+            Content = "กำลังโหลดสคริปต์...",
+            Duration = 2,
+        })
+
+        task.spawn(function()
+
+            local success, err = pcall(function()
+
+                local source = game:HttpGet(
+                    "https://raw.githubusercontent.com/RovlixTinProject/NeverX/refs/heads/main/mfr.lua"
+                )
+
+                local func = loadstring(source)
+
+                if not func then
+                    error("ไม่สามารถโหลดสคริปต์ได้")
+                end
+
+                func()
+
+            end)
+
+            if success then
+
+                WindUI:Notify({
+                    Title = "ดีด",
+                    Content = "รัน ดีด สำเร็จแล้ว ✅",
+                    Duration = 3,
+                })
+
+            else
+
+                warn("[ดีด Error]:", err)
+
+                WindUI:Notify({
+                    Title = "ดีด",
+                    Content = "รันไม่สำเร็จ ❌",
+                    Duration = 4,
+                })
+
+            end
+        end)
+    end,
+})
+
+-- =========================================================
+-- อีโมต
+-- =========================================================
+
+ScriptTab:Button({
+    Title = "อีโมต",
+    Desc = "แตะเพื่อรัน All Emotes",
+    Icon = "smile",
+
+    Callback = function()
+
+        WindUI:Notify({
+            Title = "อีโมต",
+            Content = "กำลังโหลดสคริปต์...",
+            Duration = 2,
+        })
+
+        task.spawn(function()
+
+            local success, err = pcall(function()
+
+                local source = game:HttpGet(
+                    "https://raw.githubusercontent.com/thefinalstandofizaan-droid/Script-for-me/main/All%20Emotes"
+                )
+
+                local func = loadstring(source)
+
+                if not func then
+                    error("ไม่สามารถโหลดสคริปต์ได้")
+                end
+
+                func()
+
+            end)
+
+            if success then
+
+                WindUI:Notify({
+                    Title = "อีโมต",
+                    Content = "รันอีโมตสำเร็จแล้ว ✅",
+                    Duration = 3,
+                })
+
+            else
+
+                warn("[Emotes Error]:", err)
+
+                WindUI:Notify({
+                    Title = "อีโมต",
+                    Content = "รันไม่สำเร็จ ❌",
+                    Duration = 4,
+                })
+
+            end
+        end)
+    end,
+})
 
 -- =========================================================
 -- FLOATING FLY BUTTON
@@ -1215,9 +1316,7 @@ RunService.Heartbeat:Connect(function(dt)
         return
     end
 
-    -- =====================================================
     -- FREEZE ANIMATION
-    -- =====================================================
 
     if freezeAnimEnabled then
 
@@ -1243,9 +1342,7 @@ RunService.Heartbeat:Connect(function(dt)
         end
     end
 
-    -- =====================================================
     -- FLY
-    -- =====================================================
 
     if flyEnabled then
 
@@ -1424,9 +1521,7 @@ RunService.Heartbeat:Connect(function(dt)
         end
     end
 
-    -- =====================================================
     -- FAKE BUG
-    -- =====================================================
 
     if fakeBugEnabled then
 
@@ -1580,9 +1675,7 @@ RunService.Heartbeat:Connect(function(dt)
         end
     end
 
-    -- =====================================================
-    -- AUTO BLOCK ENGINE
-    -- =====================================================
+    -- AUTO BLOCK
 
     if autoBlockEnabled then
 
