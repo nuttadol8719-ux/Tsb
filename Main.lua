@@ -811,33 +811,6 @@ BlockTab:Slider({
     end
 })
 
--- =========================================================
--- OTHER TAB
--- =========================================================
-
-OtherTab:Paragraph({
-    Title = "ℹ️ ข้อมูล UI",
-    Description =
-        "UI Library: WindUI\n" ..
-        "Created by: pond\n" ..
-        "WindUI by Footagesus"
-})
-
-OtherTab:Button({
-    Title = "แจ้งเตือนทดสอบ",
-    Icon = "bell",
-
-    Callback = function()
-
-        WindUI:Notify({
-            Title = "น้องปอนด์ Hub",
-            Content = "WindUI ทำงานปกติแล้ว!",
-            Duration = 3,
-        })
-
-    end
-})
-
 -- ==========================================
 -- 🧩 สคริปด๋มดุย
 -- ==========================================
@@ -886,6 +859,35 @@ ScriptTab:Button({
         end)
     end
 })
+
+-- =========================================================
+-- OTHER TAB
+-- =========================================================
+
+OtherTab:Paragraph({
+    Title = "ℹ️ ข้อมูล UI",
+    Description =
+        "UI Library: WindUI\n" ..
+        "Created by: pond\n" ..
+        "WindUI by Footagesus"
+})
+
+OtherTab:Button({
+    Title = "แจ้งเตือนทดสอบ",
+    Icon = "bell",
+
+    Callback = function()
+
+        WindUI:Notify({
+            Title = "น้องปอนด์ Hub",
+            Content = "WindUI ทำงานปกติแล้ว!",
+            Duration = 3,
+        })
+
+    end
+})
+
+
 
 -- =========================================================
 -- KEYBIND C
